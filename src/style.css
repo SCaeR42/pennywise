@@ -3,6 +3,7 @@
 /*---break---*/
 
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 @import 'vue-sonner/style.css';
 
 /*---break---*/

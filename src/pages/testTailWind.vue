@@ -77,6 +77,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogScrollContent,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
@@ -170,6 +171,8 @@ const progressValue = ref(65)
 const switchValue = ref(false)
 const checkboxValue = ref(false)
 const dialogOpen = ref(false)
+const dialogScrollOpen = ref(false)
+const dialogFormOpen = ref(false)
 const selectedOption = ref('')
 const togglePressed = ref(false)
 const radioValue = ref('comfortable')
@@ -494,27 +497,101 @@ const popoverOpen = ref(false)
       <section>
         <h2 class="mb-6 text-2xl font-semibold border-l-4 border-primary pl-4">shadcn-vue: Диалог</h2>
         <div class="rounded-xl border border-border p-6 bg-card shadow-sm">
-          <Dialog v-model:open="dialogOpen">
-            <DialogTrigger as-child>
-              <Button>Открыть диалог</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Подтверждение действия</DialogTitle>
-                <DialogDescription>
-                  Вы уверены, что хотите выполнить это действие? Это нельзя отменить.
-                </DialogDescription>
-              </DialogHeader>
-              <div class="space-y-4 py-4">
-                <Label for="confirm-text">Введите "подтвердить" для продолжения</Label>
-                <Input id="confirm-text" placeholder="подтвердить" />
-              </div>
-              <DialogFooter>
-                <Button variant="outline" @click="dialogOpen = false">Отмена</Button>
-                <Button variant="destructive">Подтвердить</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <div class="flex flex-wrap gap-4">
+            <!-- Базовый диалог подтверждения -->
+            <Dialog v-model:open="dialogOpen">
+              <DialogTrigger as-child>
+                <Button>Подтверждение</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Подтверждение действия</DialogTitle>
+                  <DialogDescription>
+                    Вы уверены, что хотите выполнить это действие? Это нельзя отменить.
+                  </DialogDescription>
+                </DialogHeader>
+                <div class="space-y-4 py-4">
+                  <Label for="confirm-text">Введите "подтвердить" для продолжения</Label>
+                  <Input id="confirm-text" placeholder="подтвердить" />
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" @click="dialogOpen = false">Отмена</Button>
+                  <Button variant="destructive">Подтвердить</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            <!-- Диалог с прокруткой -->
+            <Dialog v-model:open="dialogScrollOpen">
+              <DialogTrigger as-child>
+                <Button variant="outline">С прокруткой</Button>
+              </DialogTrigger>
+              <DialogScrollContent>
+                <DialogHeader>
+                  <DialogTitle>Условия использования</DialogTitle>
+                  <DialogDescription>
+                    Пожалуйста, ознакомьтесь с условиями перед продолжением.
+                  </DialogDescription>
+                </DialogHeader>
+                <div class="space-y-4 py-4 max-h-[60vh] overflow-y-auto pr-2">
+                  <div v-for="i in 20" :key="i" class="space-y-2">
+                    <h4 class="font-medium">Раздел {{ i }}</h4>
+                    <p class="text-sm text-muted-foreground">
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </p>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" @click="dialogScrollOpen = false">Закрыть</Button>
+                  <Button>Принимаю</Button>
+                </DialogFooter>
+              </DialogScrollContent>
+            </Dialog>
+
+            <!-- Диалог формы редактирования -->
+            <Dialog v-model:open="dialogFormOpen">
+              <DialogTrigger as-child>
+                <Button variant="secondary">Редактирование</Button>
+              </DialogTrigger>
+              <DialogContent class="sm:max-w-[525px]">
+                <DialogHeader>
+                  <DialogTitle>Редактировать профиль</DialogTitle>
+                  <DialogDescription>
+                    Внесите изменения в данные профиля. Нажмите сохранить когда закончите.
+                  </DialogDescription>
+                </DialogHeader>
+                <div class="grid gap-4 py-4">
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="name-edit" class="text-right">Имя</Label>
+                    <Input id="name-edit" value="Иван Иванов" class="col-span-3" />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="username-edit" class="text-right">Логин</Label>
+                    <Input id="username-edit" value="@ivanov" class="col-span-3" />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="email-edit" class="text-right">Email</Label>
+                    <Input id="email-edit" type="email" value="ivan@example.com" class="col-span-3" />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="bio-edit" class="text-right col-start-1">О себе</Label>
+                    <Textarea id="bio-edit" class="col-span-3" placeholder="Расскажите о себе..." />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" @click="dialogFormOpen = false">Отмена</Button>
+                  <Button @click="dialogFormOpen = false">Сохранить</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <!-- Описание вариантов использования -->
+          <div class="mt-6 space-y-3 text-sm text-muted-foreground">
+            <p><strong class="text-foreground">Dialog</strong> — базовый диалог для подтверждений и простых форм.</p>
+            <p><strong class="text-foreground">DialogScrollContent</strong> — диалог с прокручиваемым содержимым для длинных текстов.</p>
+            <p><strong class="text-foreground">Dialog + форма</strong> — диалог для редактирования данных с полями ввода.</p>
+          </div>
         </div>
       </section>
 
