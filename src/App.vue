@@ -3,7 +3,5 @@
 </script>
 
 <template>
-  <div class="bg-pink-400">
-    Тест розового слона
-  </div>
+  <router-view />
 </template>
