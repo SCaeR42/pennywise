@@ -1,9 +1,9 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /*---break---*/
 
 @import "tailwindcss";
+@import 'vue-sonner/style.css';
 
 /*---break---*/
 
@@ -93,7 +93,7 @@
 
 @layer base {
     * {
-        /*@apply border-border;*/
+        @apply border-border;
     }
 
     body {
@@ -219,11 +219,12 @@
 /*---break---*/
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
+
+    body {
+        @apply bg-background text-foreground;
     }
 }
 

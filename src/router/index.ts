@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
         path: '/testui',
         name: '/test-tailwind',
         // component: testTailWind
-        component: () => import('/src/pages/testTailWind.vue')
+        component: () => import('@/pages/testTailWind.vue')
     },
     {
         path: '/',
