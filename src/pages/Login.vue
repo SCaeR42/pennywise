@@ -6,7 +6,7 @@
           <Wallet class="h-6 w-6 text-primary" />
         </div>
         <h3 class="text-2xl font-semibold leading-none tracking-tight">Вход</h3>
-        <p class="text-sm text-muted-foreground">Войдите в свой аккаунт ФинУчёт</p>
+        <p class="text-sm text-muted-foreground">Войдите в свой аккаунт {{ APP_CONFIG.NAME }}</p>
       </div>
       <form @submit.prevent="handleSubmit">
         <div class="p-6 pt-0 space-y-4">
@@ -60,6 +60,7 @@ import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
 import { Wallet } from 'lucide-vue-next'
+import {APP_CONFIG} from '@/constants';
 
 const email = ref('mail@example.com')
 const password = ref('123')

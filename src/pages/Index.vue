@@ -20,14 +20,14 @@
           <template v-if="authStore.isAuthenticated">
             <RouterLink
                 to="/app/dashboard"
-                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3"
+                :class="btnClass"
             >
               Личный кабинет
             </RouterLink>
 
             <RouterLink
                 to="/logout"
-                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3 cursor-pointer"
+                :class="btnClass"
                 @click="authStore.logout()"
             >
               Выйти
@@ -35,7 +35,7 @@
 
             <RouterLink
                 to="/testui"
-                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3"
+                :class="btnClass"
             >
               testUI
             </RouterLink>
@@ -50,7 +50,7 @@
 
             <RouterLink
                 to="/register"
-                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3"
+                :class="btnClass"
             >
               Регистрация
             </RouterLink>
@@ -74,10 +74,17 @@ import {RouterLink} from 'vue-router'
 import {Wallet, Moon, Sun} from 'lucide-vue-next'
 import {useAuthStore} from '@/stores/auth'
 import {useThemeStore} from '@/stores/theme'
-import { APP_CONFIG } from '@/constants';
+import {APP_CONFIG} from '@/constants';
+import Hero from '@/components/landing/Hero.vue'
+import Features from '@/components/landing/Features.vue'
+import Pricing from '@/components/landing/Pricing.vue'
+import FAQ from '@/components/landing/FAQ.vue'
+import Footer from '@/components/landing/Footer.vue'
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()
+
+const btnClass = 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-3 cursor-pointer'
 
 const toggleTheme = () => {
   themeStore.setTheme(themeStore.resolvedTheme === 'dark' ? 'light' : 'dark')

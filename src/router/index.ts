@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
-// import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 import Index from '@/pages/Index.vue'
 import Login from '@/pages/Login.vue'
 import Logout from '@/pages/Logout.vue'
@@ -20,7 +20,6 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/testui',
         name: '/test-tailwind',
-        // component: testTailWind
         component: () => import('@/pages/testTailWind.vue')
     },
     {
@@ -106,14 +105,14 @@ const router = createRouter({
     routes
 })
 
-// router.beforeEach((to, _from, next) => {
-//     const authStore = useAuthStore()
-//
-//     if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-//         next('/login')
-//     } else {
-//         next()
-//     }
-// })
+router.beforeEach((to, _from, next) => {
+    const authStore = useAuthStore()
+
+    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+        next('/login')
+    } else {
+        next()
+    }
+})
 
 export default router
