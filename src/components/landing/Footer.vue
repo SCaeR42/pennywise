@@ -6,7 +6,7 @@
         <div>
           <div class="mb-3 flex items-center gap-2">
             <Wallet class="h-5 w-5 text-primary" />
-            <span class="text-lg font-bold text-foreground">ФинУчёт</span>
+            <span class="text-lg font-bold text-foreground">{{ APP_CONFIG.NAME }}</span>
           </div>
           <p class="text-sm text-muted-foreground">
             Эстетика управления капиталом в новом свете.
@@ -43,7 +43,7 @@
       </div>
 
       <div class="mt-8 border-t pt-6 text-center text-xs text-muted-foreground">
-        © {{ currentYear }} ФинУчёт. Стиль и стабильность.
+        © {{ currentYear }} {{ APP_CONFIG.NAME }}. Стиль и стабильность.
       </div>
     </div>
   </footer>
@@ -54,6 +54,7 @@ import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { Wallet } from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
+import {APP_CONFIG} from '@/constants';
 
 const email = ref('')
 const { toast } = useToast()
