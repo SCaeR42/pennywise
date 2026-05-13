@@ -14,7 +14,7 @@ export default defineConfig(({mode}) => {
 
     // base: '/',
     return {
-        base: process.env.GITHUB_ACTIONS ? '/pennywise/' : '/',
+        base: env.GITHUB_ACTIONS ? '/pennywise/' : '/',
         plugins: [
             vue(),
             tailwindcss(),
