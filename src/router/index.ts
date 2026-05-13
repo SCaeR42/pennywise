@@ -4,8 +4,8 @@ import Index from '@/pages/Index.vue'
 import Login from '@/pages/Login.vue'
 import Logout from '@/pages/Logout.vue'
 import Register from '@/pages/Register.vue'
-// import AppLayout from '@/components/layout/AppLayout.vue'
-// import Dashboard from '@/pages/Dashboard.vue'
+import AppLayout from '@/components/layout/AppLayout.vue'
+import Dashboard from '@/pages/Dashboard.vue'
 // import Transactions from '@/pages/Transactions.vue'
 // import TransactionNew from '@/pages/TransactionNew.vue'
 // import TransactionEdit from '@/pages/TransactionEdit.vue'
@@ -42,20 +42,20 @@ const routes: RouteRecordRaw[] = [
         name: 'Register',
         component: Register
     },
-    // {
-    //     path: '/app',
-    //     component: AppLayout,
-    //     meta: { requiresAuth: true },
-    //     children: [
-    //         {
-    //             path: '',
-    //             redirect: '/app/dashboard'
-    //         },
-    //         {
-    //             path: 'dashboard',
-    //             name: 'Dashboard',
-    //             component: Dashboard
-    //         },
+    {
+        path: '/app',
+        component: AppLayout,
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: '',
+                redirect: '/app/dashboard'
+            },
+            {
+                path: 'dashboard',
+                name: 'Dashboard',
+                component: Dashboard
+            },
     //         {
     //             path: 'transactions',
     //             name: 'Transactions',
@@ -91,8 +91,8 @@ const routes: RouteRecordRaw[] = [
     //             name: 'Settings',
     //             component: Settings
     //         }
-    //     ]
-    // },
+        ]
+    },
     {
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
