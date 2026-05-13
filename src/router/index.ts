@@ -6,13 +6,13 @@ import Logout from '@/pages/Logout.vue'
 import Register from '@/pages/Register.vue'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import Dashboard from '@/pages/Dashboard.vue'
-// import Transactions from '@/pages/Transactions.vue'
-// import TransactionNew from '@/pages/TransactionNew.vue'
-// import TransactionEdit from '@/pages/TransactionEdit.vue'
-// import Categories from '@/pages/Categories.vue'
-// import Accounts from '@/pages/Accounts.vue'
-// import TagsPage from '@/pages/Tags.vue'
-// import Settings from '@/pages/Settings.vue'
+import Transactions from '@/pages/Transactions.vue'
+import TransactionNew from '@/pages/TransactionNew.vue'
+import TransactionEdit from '@/pages/TransactionEdit.vue'
+import Categories from '@/pages/Categories.vue'
+import Accounts from '@/pages/Accounts.vue'
+import TagsPage from '@/pages/Tags.vue'
+import Settings from '@/pages/Settings.vue'
 import NotFound from '@/pages/NotFound.vue'
 // import testTailWind from '@/pages/testTailWind.vue'
 
@@ -56,41 +56,41 @@ const routes: RouteRecordRaw[] = [
                 name: 'Dashboard',
                 component: Dashboard
             },
-    //         {
-    //             path: 'transactions',
-    //             name: 'Transactions',
-    //             component: Transactions
-    //         },
-    //         {
-    //             path: 'transactions/new',
-    //             name: 'TransactionNew',
-    //             component: TransactionNew
-    //         },
-    //         {
-    //             path: 'transactions/:id/edit',
-    //             name: 'TransactionEdit',
-    //             component: TransactionEdit
-    //         },
-    //         {
-    //             path: 'categories',
-    //             name: 'Categories',
-    //             component: Categories
-    //         },
-    //         {
-    //             path: 'accounts',
-    //             name: 'Accounts',
-    //             component: Accounts
-    //         },
-    //         {
-    //             path: 'tags',
-    //             name: 'Tags',
-    //             component: TagsPage
-    //         },
-    //         {
-    //             path: 'settings',
-    //             name: 'Settings',
-    //             component: Settings
-    //         }
+            {
+                path: 'transactions',
+                name: 'Transactions',
+                component: Transactions
+            },
+            {
+                path: 'transactions/new',
+                name: 'TransactionNew',
+                component: TransactionNew
+            },
+            {
+                path: 'transactions/:id/edit',
+                name: 'TransactionEdit',
+                component: TransactionEdit
+            },
+            {
+                path: 'categories',
+                name: 'Categories',
+                component: Categories
+            },
+            {
+                path: 'accounts',
+                name: 'Accounts',
+                component: Accounts
+            },
+            {
+                path: 'tags',
+                name: 'Tags',
+                component: TagsPage
+            },
+            {
+                path: 'settings',
+                name: 'Settings',
+                component: Settings
+            }
         ]
     },
     {
