@@ -14,6 +14,10 @@ concurrency:
     group: "pages"
     cancel-in-progress: false
 
+env:
+  # Оптимизация под стандарты 2026 года: принудительно используем Node 24 для экшенов
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
