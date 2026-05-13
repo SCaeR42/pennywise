@@ -73,8 +73,8 @@
 
 <script setup lang="ts">
 import {ref, computed} from 'vue'
-import {RouterLink, useRoute} from 'vue-router'
-// import {useAuthStore} from '@/stores/auth'
+import {RouterLink, useRoute, useRouter} from 'vue-router'
+import {useAuthStore} from '@/stores/auth'
 import {useThemeStore} from '@/stores/theme'
 import {useDataStore} from '@/stores/data'
 import {
@@ -93,7 +93,9 @@ import {
 import {useSidebar} from '@/composables/useSidebar'
 import {APP_CONFIG} from '@/constants';
 
+const router = useRouter()
 const route = useRoute()
+const authStore = useAuthStore()
 const dataStore = useDataStore()
 const themeStore = useThemeStore()
 
