@@ -13,7 +13,7 @@ import Register from '@/pages/Register.vue'
 // import Accounts from '@/pages/Accounts.vue'
 // import TagsPage from '@/pages/Tags.vue'
 // import Settings from '@/pages/Settings.vue'
-// import NotFound from '@/pages/NotFound.vue'
+import NotFound from '@/pages/NotFound.vue'
 // import testTailWind from '@/pages/testTailWind.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -93,11 +93,11 @@ const routes: RouteRecordRaw[] = [
     //         }
     //     ]
     // },
-    // {
-    //     path: '/:pathMatch(.*)*',
-    //     name: 'NotFound',
-    //     component: NotFound
-    // }
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFound
+    }
 ]
 
 const router = createRouter({
