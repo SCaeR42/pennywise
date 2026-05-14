@@ -1,10 +1,7 @@
 <template>
-  <div class="space-y-6">
-    Transactions.vue
-  </div>
+  <TransactionForm/>
 </template>
 
 <script setup lang="ts">
-
-
+import TransactionForm from '@/components/transactions/TransactionForm.vue'
 </script>
