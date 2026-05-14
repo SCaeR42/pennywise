@@ -4,10 +4,12 @@
       <div class="grid gap-8 md:grid-cols-3">
         <!-- Brand -->
         <div>
-          <div class="mb-3 flex items-center gap-2">
-            <Wallet class="h-5 w-5 text-primary" />
-            <span class="text-lg font-bold text-foreground">{{ APP_CONFIG.NAME }}</span>
-          </div>
+
+          <AppLogo
+              iconClass="h-5 w-5 text-primary"
+              wrapClass="mb-3 flex items-center gap-2"
+          />
+
           <p class="text-sm text-muted-foreground">
             Эстетика управления капиталом в новом свете.
           </p>
@@ -52,9 +54,9 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
-import { Wallet } from 'lucide-vue-next'
 import { useToast } from '@/composables/useToast'
 import {APP_CONFIG} from '@/constants';
+import AppLogo from "@/components/common/AppLogo.vue";
 
 const email = ref('')
 const { toast } = useToast()

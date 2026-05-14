@@ -3,11 +3,9 @@
     <!-- Header -->
     <header class="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
       <div class="container mx-auto flex h-14 items-center justify-between px-4">
-        <div class="flex items-center gap-2">
-          <Wallet class="h-6 w-6 text-primary"/>
-          <a :href="baseUrl" class="text-lg font-bold text-foreground">{{ APP_CONFIG.NAME }}</a>
 
-        </div>
+        <AppLogo />
+
         <nav class="flex items-center gap-2">
 
           <button
@@ -72,15 +70,15 @@
 
 <script setup lang="ts">
 import {RouterLink} from 'vue-router'
-import {Wallet, Moon, Sun} from 'lucide-vue-next'
+import {Moon, Sun} from 'lucide-vue-next'
 import {useAuthStore} from '@/stores/auth'
 import {useThemeStore} from '@/stores/theme'
-import {APP_CONFIG} from '@/constants';
 import Hero from '@/components/landing/Hero.vue'
 import Features from '@/components/landing/Features.vue'
 import Pricing from '@/components/landing/Pricing.vue'
 import FAQ from '@/components/landing/FAQ.vue'
 import Footer from '@/components/landing/Footer.vue'
+import AppLogo from '@/components/common/AppLogo.vue'
 
 const authStore = useAuthStore()
 const themeStore = useThemeStore()

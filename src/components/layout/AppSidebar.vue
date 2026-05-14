@@ -5,10 +5,9 @@
   >
     <!-- Логотип -->
     <div class="p-4 border-b h-14 ">
-      <div class="flex items-center gap-2">
-        <Wallet class="h-6 w-6 text-primary"/>
-        <span v-if="!sideBarCollapsed" class="text-lg font-bold">{{ APP_CONFIG.NAME }}</span>
-      </div>
+
+      <AppLogo :hideText="sideBarCollapsed"/>
+
     </div>
 
     <!-- Навигация -->
@@ -78,7 +77,6 @@ import {useAuthStore} from '@/stores/auth'
 import {useThemeStore} from '@/stores/theme'
 import {useDataStore} from '@/stores/data'
 import {
-  Wallet,
   LayoutDashboard,
   ArrowLeftRight,
   FolderOpen,
@@ -91,13 +89,13 @@ import {
   Database
 } from 'lucide-vue-next'
 import {useSidebar} from '@/composables/useSidebar'
-import {APP_CONFIG} from '@/constants';
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 const dataStore = useDataStore()
 const themeStore = useThemeStore()
+import AppLogo from '@/components/common/AppLogo.vue'
 
 const {sideBarCollapsed} = useSidebar()
 
