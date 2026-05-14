@@ -29,7 +29,7 @@ export const useDataStore = defineStore('data', () => {
     const settings = ref<UserSettings>(getItem<UserSettings>('settings', {rowsPerPage: 10, theme: 'light' as const, sideBarCollapsed: false})
     )
     /** Флаг режима демонстрации */
-    const demoMode = ref<boolean>(getItem('demoMode', false))
+    const demoMode = ref<boolean>(getItem('demoMode', true))
 
     // ==================== Computed Properties ====================
 
