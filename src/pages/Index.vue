@@ -5,7 +5,8 @@
       <div class="container mx-auto flex h-14 items-center justify-between px-4">
         <div class="flex items-center gap-2">
           <Wallet class="h-6 w-6 text-primary"/>
-          <a href="/" class="text-lg font-bold text-foreground">{{ APP_CONFIG.NAME }}</a>
+          <a :href="baseUrl" class="text-lg font-bold text-foreground">{{ APP_CONFIG.NAME }}</a>
+
         </div>
         <nav class="flex items-center gap-2">
 
@@ -89,5 +90,7 @@ const btnClass = 'inline-flex items-center justify-center whitespace-nowrap roun
 const toggleTheme = () => {
   themeStore.setTheme(themeStore.resolvedTheme === 'dark' ? 'light' : 'dark')
 }
+
+const baseUrl = import.meta.env.BASE_URL
 
 </script>
