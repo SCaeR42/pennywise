@@ -16,7 +16,7 @@
               <path
                 :d="getPieSlice(i, data)"
                 :fill="colors[i % colors.length]"
-                stroke="hsl(var(--card))"
+                stroke="var(--card)"
                 stroke-width="2"
                 class="cursor-pointer transition-opacity"
                 :opacity="hoveredIndex === i ? 1 : 0.85"
@@ -25,17 +25,17 @@
               />
             </template>
             <!-- Внутренний круг (donut hole) -->
-            <circle cx="100" cy="100" r="45" fill="hsl(var(--card))" />
+            <circle cx="100" cy="100" r="45" fill="var(--card)" />
             <!-- Название выбранного сектора -->
-            <text x="100" y="95" text-anchor="middle" fill="hsl(var(--foreground))" font-size="10" font-weight="500">
+            <text x="100" y="95" text-anchor="middle" fill="var(--foreground)" font-size="10" font-weight="500">
               {{ data[hoveredIndex ?? defaultIndex]?.name || '' }}
             </text>
             <!-- Значение выбранного сектора -->
-            <text x="100" y="110" text-anchor="middle" fill="hsl(var(--muted-foreground))" font-size="9">
+            <text x="100" y="110" text-anchor="middle" fill="var(--muted-foreground)" font-size="9">
               {{ data[hoveredIndex ?? defaultIndex]?.value.toLocaleString('ru-RU') || 0 }} ₽
             </text>
             <!-- Процент выбранного сектора -->
-            <text x="100" y="122" text-anchor="middle" fill="hsl(var(--muted-foreground))" font-size="8">
+            <text x="100" y="122" text-anchor="middle" fill="var(--muted-foreground)" font-size="8">
               {{ hoveredIndex !== null ? ((data[hoveredIndex].value / total) * 100).toFixed(1) : '' }}%
             </text>
           </svg>
