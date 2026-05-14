@@ -140,7 +140,22 @@ const pageItems = computed(() => {
 
 const getCategoryName = (id: string) => dataStore.categories.find(c => c.id === id)?.name || '—'
 const getAccountName = (id?: string) => (id ? dataStore.accounts.find(a => a.id === id)?.name : '—') || '—'
-const getTagNames = (ids: string[]) => ids.map(id => dataStore.tags.find(t => t.id === id)).filter(Boolean)
+
+// const getTagNames = (ids: string[]) => ids.map(id => dataStore.tags.find(t => t.id === id)).filter(Boolean)
+
+// Определяем интерфейс, если он еще не импортирован
+interface Tag {
+  id: string;
+  name: string;
+  color?: string;
+}
+const getTagNames = (ids: string[]): Tag[] => {
+  return ids.flatMap(id => {
+    const foundTag = dataStore.tags.find(t => t.id === id);
+    return foundTag ? [foundTag] : []; // Если тег не найден, возвращаем пустой массив (он схлопнется)
+  });
+};
+
 
 const getTypeLabel = (type: string) => {
   const labels: Record<string, string> = { expense: 'Расход', income: 'Доход', transfer: 'Перевод' }
