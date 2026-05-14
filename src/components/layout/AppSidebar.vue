@@ -59,13 +59,23 @@
       </button>
 
       <!-- Выход -->
-      <button
+      <RouterLink
+          to="/logout"
           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm cursor-pointer hover:bg-muted/50 transition-colors w-full text-destructive"
-          @click="handleLogout"
       >
         <LogOut class="h-4 w-4"/>
         <span v-if="!sideBarCollapsed">Выйти</span>
-      </button>
+      </RouterLink>
+
+      <hr>
+
+      <RouterLink
+          to="/testui"
+          class="flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors text-primary"
+      >
+        <component :is="BetweenHorizontalStart" class="h-4 w-4 text-primary"/>
+        testUI
+      </RouterLink>
     </div>
   </aside>
 </template>
@@ -77,6 +87,7 @@ import {useAuthStore} from '@/stores/auth'
 import {useThemeStore} from '@/stores/theme'
 import {useDataStore} from '@/stores/data'
 import {
+  BetweenHorizontalStart,
   LayoutDashboard,
   ArrowLeftRight,
   FolderOpen,
@@ -117,11 +128,5 @@ const toggleTheme = () => {
   themeStore.setTheme(themeStore.resolvedTheme === 'dark' ? 'light' : 'dark')
 }
 
-/** Выход из аккаунта */
-const handleLogout = () => {
-  // TODO: Добавить логаут из auth store
-  // authStore.logout()
-  // router.push('/login')
-  console.log('Logout clicked')
-}
+
 </script>

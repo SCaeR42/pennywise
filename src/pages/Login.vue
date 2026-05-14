@@ -71,7 +71,7 @@ const { toast } = useToast()
 const handleSubmit = () => {
   if (authStore.login(email.value, password.value)) {
     toast.success('Добро пожаловать!')
-    router.push('/')
+    router.push('/app/dashboard')
   } else {
     toast.error('Неверный email или пароль')
   }

@@ -31,13 +31,6 @@
             >
               Выйти
             </RouterLink>
-
-            <RouterLink
-                to="/testui"
-                :class="btnClass"
-            >
-              testUI
-            </RouterLink>
           </template>
           <template v-else>
             <RouterLink
