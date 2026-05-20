@@ -162,7 +162,7 @@ const themeOptions = [
   { value: 'light', label: 'Светлая', icon: Sun },
   { value: 'dark', label: 'Тёмная', icon: Moon },
   { value: 'system', label: 'Системная', icon: Monitor },
-]
+] as const
 
 const rowsPerPageList = [5, 10, 20, 50]
 const onRowsPerPageChange = (e: Event) => {

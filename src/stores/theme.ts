@@ -55,8 +55,7 @@ export const useThemeStore = defineStore('theme', () => {
    *
    * @param t — новое значение темы ('light' | 'dark' | 'system')
    */
-  const setTheme = (t: string) => {
-    // @ts-ignore
+  const setTheme = (t: Theme) => {
       theme.value = t
   }
 
