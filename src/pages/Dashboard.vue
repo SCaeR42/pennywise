@@ -51,7 +51,9 @@ import { ref, computed } from 'vue'
 import { ArrowDownRight, ArrowUpRight, Repeat, TrendingUp } from 'lucide-vue-next'
 import { format, parseISO, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, endOfDay, isWithinInterval } from 'date-fns'
 import { ru } from 'date-fns/locale'
-import { useDataStore } from '@/stores/data'
+import { useTransactionStore } from '@/stores/transactions'
+import { useAccountStore }     from '@/stores/accounts'
+import { useCategoryStore }    from '@/stores/categories'
 import type { Transaction } from '@/types/finance'
 
 // Виджеты дашборда
@@ -62,7 +64,9 @@ import TrendChart from '@/components/dashboard/TrendChart.vue'
 import PieChart from '@/components/dashboard/PieChart.vue'
 import TopTransactions from '@/components/dashboard/TopTransactions.vue'
 
-const dataStore = useDataStore()
+const transactionStore = useTransactionStore()
+const accountStore     = useAccountStore()
+const categoryStore    = useCategoryStore()
 
 // Цвета для круговых диаграмм
 const COLORS = [
@@ -80,11 +84,11 @@ const customTo = ref('')
 const accountFilter = ref('all')
 
 /** Список счетов для фильтра */
-const accounts = computed(() => dataStore.accounts || [])
+const accounts = computed(() => accountStore.accounts || [])
 
 /** Отфильтрованные транзакции */
 const filtered = computed(() => {
-  const txs = dataStore.transactions || []
+  const txs = transactionStore.transactions || []
   let from: Date | undefined, to: Date | undefined
   const now = new Date()
   if (period.value === 'month') { from = startOfMonth(now); to = endOfMonth(now) }
@@ -176,7 +180,7 @@ const categoryData = computed(() => {
   const map = new Map<string, number>()
   for (const t of filtered.value) {
     if (t.type !== 'expense') continue
-    const cat = dataStore.categories.find(c => c.id === t.categoryId)?.name || 'Прочее'
+    const cat = categoryStore.categories.find(c => c.id === t.categoryId)?.name || 'Прочее'
     map.set(cat, (map.get(cat) || 0) + (t.amount || 0))
   }
   return Array.from(map.entries())
@@ -190,7 +194,7 @@ const categoryTotal = computed(() =>
 )
 
 const accountData = computed(() =>
-    (dataStore.accounts || [])
+    (accountStore.accounts || [])
         .filter(a => a.balance > 0)
         .map(a => ({ name: a.name, value: a.balance }))
         .sort((a, b) => b.value - a.value)
@@ -213,7 +217,7 @@ const top5 = computed(() =>
 // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (передаются в TopTransactions)
 // ============================================================
 const getCategoryName = (id: string) =>
-    dataStore.categories.find(c => c.id === id)?.name || '—'
+    categoryStore.categories.find(c => c.id === id)?.name || '—'
 
 const getTypeLabel = (t: string) =>
     ({ expense: 'Расход', income: 'Доход', transfer: 'Перевод' }[t] || t)
@@ -230,7 +234,7 @@ const formatDate = (d: string) =>
 
 const getAccountInfo = (t: Transaction) => {
   const gn = (id?: string) =>
-      id ? (dataStore.accounts || []).find(a => a.id === id)?.name || '—' : '—'
+      id ? (accountStore.accounts || []).find(a => a.id === id)?.name || '—' : '—'
   if (t.type === 'transfer') return `${gn(t.sourceAccountId)} → ${gn(t.destinationAccountId)}`
   return gn(t.sourceAccountId || t.destinationAccountId)
 }

@@ -30,20 +30,20 @@
       <div
           v-if="!sideBarCollapsed"
           class="flex items-center gap-2 rounded-md px-3 py-2 text-sm cursor-pointer hover:bg-muted/50 transition-colors"
-          @click="dataStore.setDemoMode(!dataStore.demoMode)"
+          @click="settingsStore.setDemoMode(!settingsStore.demoMode)"
       >
-        <Database :class="dataStore.demoMode ? 'text-primary' : 'text-muted-foreground'" class="h-4 w-4"/>
-        <span v-if="!sideBarCollapsed" :class="dataStore.demoMode ? 'text-primary font-medium' : 'text-muted-foreground'">Демо</span>
+        <Database :class="settingsStore.demoMode ? 'text-primary' : 'text-muted-foreground'" class="h-4 w-4"/>
+        <span v-if="!sideBarCollapsed" :class="settingsStore.demoMode ? 'text-primary font-medium' : 'text-muted-foreground'">Демо</span>
         <button
             role="switch"
-            :aria-checked="dataStore.demoMode"
+            :aria-checked="settingsStore.demoMode"
             class="ml-auto relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
-            :class="{ 'bg-primary': dataStore.demoMode, 'bg-input': !dataStore.demoMode }"
-            @click.stop="dataStore.setDemoMode(!dataStore.demoMode)"
+            :class="{ 'bg-primary': settingsStore.demoMode, 'bg-input': !settingsStore.demoMode }"
+            @click.stop="settingsStore.setDemoMode(!settingsStore.demoMode)"
         >
           <span
               class="pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform duration-200 ease-in-out"
-              :class="{ 'translate-x-4': dataStore.demoMode, 'translate-x-0': !dataStore.demoMode }"
+              :class="{ 'translate-x-4': settingsStore.demoMode, 'translate-x-0': !settingsStore.demoMode }"
           />
         </button>
       </div>
@@ -84,8 +84,8 @@
 import {ref, computed} from 'vue'
 import {RouterLink, useRoute, useRouter} from 'vue-router'
 import {useAuthStore} from '@/stores/auth'
-import {useThemeStore} from '@/stores/theme'
-import {useDataStore} from '@/stores/data'
+import {useThemeStore}    from '@/stores/theme'
+import {useSettingsStore} from '@/stores/settings'
 import {
   BetweenHorizontalStart,
   LayoutDashboard,
@@ -103,9 +103,9 @@ import {useSidebar} from '@/composables/useSidebar'
 
 const router = useRouter()
 const route = useRoute()
-const authStore = useAuthStore()
-const dataStore = useDataStore()
-const themeStore = useThemeStore()
+const authStore     = useAuthStore()
+const settingsStore = useSettingsStore()
+const themeStore    = useThemeStore()
 import AppLogo from '@/components/common/AppLogo.vue'
 
 const {sideBarCollapsed} = useSidebar()

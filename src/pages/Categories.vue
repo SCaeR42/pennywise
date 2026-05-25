@@ -44,7 +44,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="c in dataStore.categories" :key="c.id" class="border-b transition-colors hover:bg-muted/50">
+        <tr v-for="c in categoryStore.categories" :key="c.id" class="border-b transition-colors hover:bg-muted/50">
           <td class="p-4 align-middle">{{ c.name }}</td>
           <td class="p-4 align-middle">
             <div class="flex gap-1">
@@ -71,11 +71,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useDataStore } from '@/stores/data'
+import { useCategoryStore } from '@/stores/categories'
 import { useToast } from '@/composables/useToast'
 import { Plus, Pencil, Trash2 } from 'lucide-vue-next'
 
-const dataStore = useDataStore()
+const categoryStore = useCategoryStore()
 const { toast } = useToast()
 
 const dialogOpen = ref(false)
@@ -97,17 +97,17 @@ const openEdit = (id: string, n: string) => {
 const handleSave = () => {
   if (!name.value.trim()) return
   if (editId.value) {
-    dataStore.updateCategory(editId.value, { name: name.value.trim() })
+    categoryStore.updateCategory(editId.value, { name: name.value.trim() })
     toast.success('Категория обновлена')
   } else {
-    dataStore.addCategory({ name: name.value.trim() })
+    categoryStore.addCategory({ name: name.value.trim() })
     toast.success('Категория добавлена')
   }
   dialogOpen.value = false
 }
 
 const handleDelete = (id: string) => {
-  dataStore.deleteCategory(id)
+  categoryStore.deleteCategory(id)
   toast.success('Удалено')
 }
 </script>

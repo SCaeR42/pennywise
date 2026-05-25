@@ -63,7 +63,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="a in dataStore.accounts" :key="a.id" class="border-b transition-colors hover:bg-muted/50">
+        <tr v-for="a in accountStore.accounts" :key="a.id" class="border-b transition-colors hover:bg-muted/50">
           <td class="p-4 align-middle">{{ a.name }}</td>
           <td class="p-4 align-middle">{{ a.currency }}</td>
           <td class="p-4 align-middle text-right font-medium">{{ a.balance.toLocaleString('ru-RU') }} ₽</td>
@@ -92,11 +92,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useDataStore } from '@/stores/data'
+import { useAccountStore } from '@/stores/accounts'
 import { useToast } from '@/composables/useToast'
 import { Plus, Pencil, Trash2 } from 'lucide-vue-next'
 
-const dataStore = useDataStore()
+const accountStore = useAccountStore()
 const { toast } = useToast()
 
 const dialogOpen = ref(false)
@@ -114,7 +114,7 @@ const openNew = () => {
 }
 
 const openEdit = (id: string) => {
-  const a = dataStore.accounts.find(x => x.id === id)
+  const a = accountStore.accounts.find(x => x.id === id)
   if (!a) return
   editId.value = id
   name.value = a.name
@@ -127,17 +127,17 @@ const handleSave = () => {
   if (!name.value.trim()) return
   const data = { name: name.value.trim(), currency: currency.value, balance: parseFloat(balance.value) || 0 }
   if (editId.value) {
-    dataStore.updateAccount(editId.value, data)
+    accountStore.updateAccount(editId.value, data)
     toast.success('Счёт обновлён')
   } else {
-    dataStore.addAccount(data)
+    accountStore.addAccount(data)
     toast.success('Счёт добавлен')
   }
   dialogOpen.value = false
 }
 
 const handleDelete = (id: string) => {
-  dataStore.deleteAccount(id)
+  accountStore.deleteAccount(id)
   toast.success('Удалено')
 }
 </script>

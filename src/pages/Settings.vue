@@ -83,7 +83,7 @@
         <div class="space-y-2">
           <label class="text-sm font-medium leading-none">Строк в списках</label>
           <select
-              :value="dataStore.settings.rowsPerPage"
+              :value="settingsStore.settings.rowsPerPage"
               @change="onRowsPerPageChange"
               class="flex h-10 w-32 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
@@ -135,16 +135,16 @@
 
 <script setup lang="ts">
 import {ref} from 'vue'
-import {useAuthStore} from '@/stores/auth'
-import {useDataStore} from '@/stores/data'
-import {useThemeStore} from '@/stores/theme'
-import {useToast} from '@/composables/useToast'
+import {useAuthStore}    from '@/stores/auth'
+import {useSettingsStore} from '@/stores/settings'
+import {useThemeStore}   from '@/stores/theme'
+import {useToast}        from '@/composables/useToast'
 import {User, Moon, Sun, Monitor} from 'lucide-vue-next'
 import {PRICING_PLANS} from '@/lib/defaults'
 
-const authStore = useAuthStore()
-const dataStore = useDataStore()
-const themeStore = useThemeStore()
+const authStore     = useAuthStore()
+const settingsStore = useSettingsStore()
+const themeStore    = useThemeStore()
 const {toast} = useToast()
 
 //region Security
@@ -167,7 +167,7 @@ const themeOptions = [
 const rowsPerPageList = [5, 10, 20, 50]
 const onRowsPerPageChange = (e: Event) => {
   const target = e.target as HTMLSelectElement
-  dataStore.updateSettings({rowsPerPage: parseInt(target.value)})
+  settingsStore.updateSettings({rowsPerPage: parseInt(target.value)})
 }
 
 </script>

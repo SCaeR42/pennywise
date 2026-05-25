@@ -59,7 +59,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="t in dataStore.tags" :key="t.id" class="border-b transition-colors hover:bg-muted/50">
+        <tr v-for="t in tagStore.tags" :key="t.id" class="border-b transition-colors hover:bg-muted/50">
           <td class="p-4 align-middle">
               <span
                   class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
@@ -94,11 +94,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useDataStore } from '@/stores/data'
+import { useTagStore } from '@/stores/tags'
 import { useToast } from '@/composables/useToast'
 import { Plus, Pencil, Trash2 } from 'lucide-vue-next'
 
-const dataStore = useDataStore()
+const tagStore = useTagStore()
 const { toast } = useToast()
 
 const colorOptions = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899', '#a3a3a3']
@@ -116,7 +116,7 @@ const openNew = () => {
 }
 
 const openEdit = (id: string) => {
-  const t = dataStore.tags.find(x => x.id === id)
+  const t = tagStore.tags.find(x => x.id === id)
   if (!t) return
   editId.value = id
   name.value = t.name
@@ -127,17 +127,17 @@ const openEdit = (id: string) => {
 const handleSave = () => {
   if (!name.value.trim()) return
   if (editId.value) {
-    dataStore.updateTag(editId.value, { name: name.value.trim(), color: color.value })
+    tagStore.updateTag(editId.value, { name: name.value.trim(), color: color.value })
     toast.success('Тег обновлён')
   } else {
-    dataStore.addTag({ name: name.value.trim(), color: color.value })
+    tagStore.addTag({ name: name.value.trim(), color: color.value })
     toast.success('Тег добавлен')
   }
   dialogOpen.value = false
 }
 
 const handleDelete = (id: string) => {
-  dataStore.deleteTag(id)
+  tagStore.deleteTag(id)
   toast.success('Удалено')
 }
 

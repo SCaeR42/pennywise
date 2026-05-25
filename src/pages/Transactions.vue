@@ -10,7 +10,7 @@
       </RouterLink>
     </div>
 
-    <div v-if="dataStore.transactions.length === 0" class="rounded-lg border bg-card p-12 text-center text-muted-foreground">
+    <div v-if="transactionStore.transactions.length === 0" class="rounded-lg border bg-card p-12 text-center text-muted-foreground">
       <p class="mb-4">Транзакций пока нет</p>
       <RouterLink
           to="/app/transactions/new"
@@ -116,20 +116,28 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { RouterLink } from 'vue-router'
-import { useDataStore } from '@/stores/data'
+import { useTransactionStore } from '@/stores/transactions'
+import { useCategoryStore }    from '@/stores/categories'
+import { useAccountStore }     from '@/stores/accounts'
+import { useTagStore }         from '@/stores/tags'
+import { useSettingsStore }    from '@/stores/settings'
 import { useToast } from '@/composables/useToast'
 import { Plus, Pencil, Trash2 } from 'lucide-vue-next'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 
-const dataStore = useDataStore()
+const transactionStore = useTransactionStore()
+const categoryStore    = useCategoryStore()
+const accountStore     = useAccountStore()
+const tagStore         = useTagStore()
+const settingsStore    = useSettingsStore()
 const { toast } = useToast()
 
 const page = ref(0)
-const perPage = dataStore.settings.rowsPerPage || 10
+const perPage = settingsStore.settings.rowsPerPage || 10
 
 const sorted = computed(() => {
-  return [...dataStore.transactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  return [...transactionStore.transactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 })
 
 const totalPages = computed(() => Math.ceil(sorted.value.length / perPage))
@@ -138,12 +146,9 @@ const pageItems = computed(() => {
   return sorted.value.slice(page.value * perPage, (page.value + 1) * perPage)
 })
 
-const getCategoryName = (id: string) => dataStore.categories.find(c => c.id === id)?.name || '—'
-const getAccountName = (id?: string) => (id ? dataStore.accounts.find(a => a.id === id)?.name : '—') || '—'
+const getCategoryName = (id: string) => categoryStore.categories.find(c => c.id === id)?.name || '—'
+const getAccountName = (id?: string) => (id ? accountStore.accounts.find(a => a.id === id)?.name : '—') || '—'
 
-// const getTagNames = (ids: string[]) => ids.map(id => dataStore.tags.find(t => t.id === id)).filter(Boolean)
-
-// Определяем интерфейс, если он еще не импортирован
 interface Tag {
   id: string;
   name: string;
@@ -151,11 +156,10 @@ interface Tag {
 }
 const getTagNames = (ids: string[]): Tag[] => {
   return ids.flatMap(id => {
-    const foundTag = dataStore.tags.find(t => t.id === id);
-    return foundTag ? [foundTag] : []; // Если тег не найден, возвращаем пустой массив (он схлопнется)
-  });
-};
-
+    const foundTag = tagStore.tags.find(t => t.id === id)
+    return foundTag ? [foundTag] : []
+  })
+}
 
 const getTypeLabel = (type: string) => {
   const labels: Record<string, string> = { expense: 'Расход', income: 'Доход', transfer: 'Перевод' }
@@ -174,7 +178,7 @@ const getTypeColor = (type: string) => {
 const formatDate = (d: Date) => format(d, 'dd.MM.yyyy', { locale: ru })
 
 const handleDelete = (id: string) => {
-  dataStore.deleteTransaction(id)
+  transactionStore.deleteTransaction(id)
   toast.success('Транзакция удалена')
 }
 </script>

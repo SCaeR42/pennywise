@@ -65,7 +65,7 @@
         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <option value="">Выберите счёт</option>
-        <option v-for="a in dataStore.accounts" :key="a.id" :value="a.id">{{ a.name }}</option>
+        <option v-for="a in accountStore.accounts" :key="a.id" :value="a.id">{{ a.name }}</option>
       </select>
     </div>
 
@@ -77,7 +77,7 @@
         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <option value="">Выберите счёт</option>
-        <option v-for="a in dataStore.accounts" :key="a.id" :value="a.id">{{ a.name }}</option>
+        <option v-for="a in accountStore.accounts" :key="a.id" :value="a.id">{{ a.name }}</option>
       </select>
     </div>
 
@@ -89,7 +89,7 @@
         class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
         <option value="">Выберите категорию</option>
-        <option v-for="c in dataStore.categories" :key="c.id" :value="c.id">{{ c.name }}</option>
+        <option v-for="c in categoryStore.categories" :key="c.id" :value="c.id">{{ c.name }}</option>
       </select>
     </div>
 
@@ -98,7 +98,7 @@
       <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Теги</label>
       <div class="flex flex-wrap gap-2">
         <span
-          v-for="tag in dataStore.tags"
+          v-for="tag in tagStore.tags"
           :key="tag.id"
           class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors cursor-pointer"
           :class="selectedTags.includes(tag.id) ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-foreground'"
@@ -143,7 +143,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useDataStore } from '@/stores/data'
+import { useTransactionStore } from '@/stores/transactions'
+import { useCategoryStore }    from '@/stores/categories'
+import { useAccountStore }     from '@/stores/accounts'
+import { useTagStore }         from '@/stores/tags'
 import { useToast } from '@/composables/useToast'
 import { CalendarIcon, X } from 'lucide-vue-next'
 import { format } from 'date-fns'
@@ -154,7 +157,10 @@ const props = defineProps<{
   editId?: string
 }>()
 
-const dataStore = useDataStore()
+const transactionStore = useTransactionStore()
+const categoryStore    = useCategoryStore()
+const accountStore     = useAccountStore()
+const tagStore         = useTagStore()
 const router = useRouter()
 const route = useRoute()
 const { toast } = useToast()
@@ -164,7 +170,7 @@ const showCalendar = ref(false)
 // Find existing transaction for edit mode
 const existing = computed(() => {
   if (props.editId) {
-    return dataStore.transactions.find(t => t.id === props.editId)
+    return transactionStore.transactions.find(t => t.id === props.editId)
   }
   return null
 })
@@ -211,10 +217,10 @@ const handleSubmit = () => {
   }
 
   if (props.editId) {
-    dataStore.updateTransaction(props.editId, data)
+    transactionStore.updateTransaction(props.editId, data)
     toast.success('Транзакция обновлена')
   } else {
-    dataStore.addTransaction(data)
+    transactionStore.addTransaction(data)
     toast.success('Транзакция добавлена')
   }
   router.push('/app/transactions')

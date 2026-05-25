@@ -2,6 +2,7 @@
 
 > [!IMPORTANT]
 > Документ актуализирован: май 2026. Проект находится в стадии активной разработки (MVP готов).
+> Последнее изменение: рефакторинг монолитного `useDataStore` → 5 специализированных Pinia-сторов.
 
 ---
 
@@ -76,8 +77,13 @@ src/
 │   └── index.ts              # Маршрутизация с guards
 ├── stores/
 │   ├── auth.ts               # Авторизация (mock)
-│   ├── data.ts               # Финансовые данные
-│   └── theme.ts              # Управление темой
+│   ├── data.ts               # @deprecated — фасад обратной совместимости
+│   ├── transactions.ts       # useTransactionStore — CRUD транзакций
+│   ├── categories.ts         # useCategoryStore   — CRUD категорий
+│   ├── accounts.ts           # useAccountStore    — CRUD счетов
+│   ├── tags.ts               # useTagStore        — CRUD тегов
+│   ├── settings.ts           # useSettingsStore   — настройки + demoMode
+│   └── theme.ts              # useThemeStore      — светлая/тёмная тема
 ├── types/
 │   └── finance.ts            # TypeScript интерфейсы
 └── main.ts                   # Точка входа
@@ -126,6 +132,18 @@ src/
 - Переключение темы (light/dark/system)
 - Настройка количества строк в списках
 
+### Этап 8: Рефакторинг Pinia-сторов ✅
+
+- Монолитный `useDataStore` разбит на 5 независимых специализированных сторов:
+  - `useTransactionStore` — CRUD транзакций + `effectiveTransactions`
+  - `useCategoryStore` — CRUD категорий + `effectiveCategories`
+  - `useAccountStore` — CRUD счетов + `effectiveAccounts`
+  - `useTagStore` — CRUD тегов + `effectiveTags`
+  - `useSettingsStore` — настройки пользователя + `demoMode` (Single Source of Truth)
+- `demoMode` вынесен в `useSettingsStore` — единственный источник истины для режима демо
+- `data.ts` сохранён как `@deprecated`-фасад обратной совместимости с реэкспортом всех новых сторов
+- Все потребители (9 файлов: страницы, компоненты, composables) мигрированы на прямые импорты
+
 ---
 
 ## 📊 План презентации проекта
@@ -158,10 +176,15 @@ src/
 ├─────────────────────────────────────────────────────────────┤
 │  Router → Guards → Layout → Pages → Components               │
 ├─────────────────────────────────────────────────────────────┤
-│  Pinia Stores:                                               │
-│  • useAuthStore   — пользователь и сессия                   │
-│  • useDataStore   — транзакции, категории, счета, теги      │
-│  • useThemeStore  — светлая/тёмная тема                      │
+│  Pinia Stores (специализированные):                          │
+│  • useAuthStore        — пользователь и сессия              │
+│  • useSettingsStore    — настройки UI + demoMode (SoT)      │
+│  • useTransactionStore — CRUD транзакций                     │
+│  • useCategoryStore    — CRUD категорий                      │
+│  • useAccountStore     — CRUD счетов                         │
+│  • useTagStore         — CRUD тегов                          │
+│  • useThemeStore       — светлая/тёмная тема                 │
+│  • useDataStore        — @deprecated фасад (обратная совм.) │
 ├─────────────────────────────────────────────────────────────┤
 │  Storage Layer:                                              │
 │  • localStorage (через lib/storage.ts)                       │
@@ -186,7 +209,7 @@ src/
 | **Строк кода**  | ~5000+ (Vue SFC)                |
 | **Компонентов** | 50+ UI + 15+ бизнес-компонентов |
 | **Страниц**     | 12 основных страниц             |
-| **Stores**      | 3 (auth, data, theme)           |
+| **Stores**      | 7 (auth, transactions, categories, accounts, tags, settings, theme) + 1 deprecated фасад |
 | **TypeScript**  | 100% типизация                  |
 
 ### 6. Демонстрация (скриншоты/видео)
