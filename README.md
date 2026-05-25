@@ -135,11 +135,11 @@ src/
 ### Этап 8: Рефакторинг Pinia-сторов ✅
 
 - Монолитный `useDataStore` разбит на 5 независимых специализированных сторов:
-  - `useTransactionStore` — CRUD транзакций + `effectiveTransactions`
-  - `useCategoryStore` — CRUD категорий + `effectiveCategories`
-  - `useAccountStore` — CRUD счетов + `effectiveAccounts`
-  - `useTagStore` — CRUD тегов + `effectiveTags`
-  - `useSettingsStore` — настройки пользователя + `demoMode` (Single Source of Truth)
+    - `useTransactionStore` — CRUD транзакций + `effectiveTransactions`
+    - `useCategoryStore` — CRUD категорий + `effectiveCategories`
+    - `useAccountStore` — CRUD счетов + `effectiveAccounts`
+    - `useTagStore` — CRUD тегов + `effectiveTags`
+    - `useSettingsStore` — настройки пользователя + `demoMode` (Single Source of Truth)
 - `demoMode` вынесен в `useSettingsStore` — единственный источник истины для режима демо
 - `data.ts` сохранён как `@deprecated`-фасад обратной совместимости с реэкспортом всех новых сторов
 - Все потребители (9 файлов: страницы, компоненты, composables) мигрированы на прямые импорты
@@ -172,23 +172,21 @@ src/
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Клиент (Vue SPA)                      │
+│  Router → Guards → Layout → Pages → Components              │
 ├─────────────────────────────────────────────────────────────┤
-│  Router → Guards → Layout → Pages → Components               │
-├─────────────────────────────────────────────────────────────┤
-│  Pinia Stores (специализированные):                          │
+│  Pinia Stores (специализированные):                         │
 │  • useAuthStore        — пользователь и сессия              │
 │  • useSettingsStore    — настройки UI + demoMode (SoT)      │
-│  • useTransactionStore — CRUD транзакций                     │
-│  • useCategoryStore    — CRUD категорий                      │
-│  • useAccountStore     — CRUD счетов                         │
-│  • useTagStore         — CRUD тегов                          │
-│  • useThemeStore       — светлая/тёмная тема                 │
+│  • useTransactionStore — CRUD транзакций                    │
+│  • useCategoryStore    — CRUD категорий                     │
+│  • useAccountStore     — CRUD счетов                        │
+│  • useTagStore         — CRUD тегов                         │
+│  • useThemeStore       — светлая/тёмная тема                │
 │  • useDataStore        — @deprecated фасад (обратная совм.) │
 ├─────────────────────────────────────────────────────────────┤
-│  Storage Layer:                                              │
-│  • localStorage (через lib/storage.ts)                       │
-│  • Демо-данные (lib/demoData.ts)                             │
+│  Storage Layer:                                             │
+│  • localStorage (через lib/storage.ts)                      │
+│  • Демо-данные (lib/demoData.ts)                            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -204,13 +202,13 @@ src/
 
 ### 5. Статистика кода
 
-| **Показатель**  | **Значение**                    |
-|-----------------|---------------------------------|
-| **Строк кода**  | ~5000+ (Vue SFC)                |
-| **Компонентов** | 50+ UI + 15+ бизнес-компонентов |
-| **Страниц**     | 12 основных страниц             |
+| **Показатель**  | **Значение**                                                                             |
+|-----------------|------------------------------------------------------------------------------------------|
+| **Строк кода**  | ~5000+ (Vue SFC)                                                                         |
+| **Компонентов** | 50+ UI + 15+ бизнес-компонентов                                                          |
+| **Страниц**     | 12 основных страниц                                                                      |
 | **Stores**      | 7 (auth, transactions, categories, accounts, tags, settings, theme) + 1 deprecated фасад |
-| **TypeScript**  | 100% типизация                  |
+| **TypeScript**  | 100% типизация                                                                           |
 
 ### 6. Демонстрация (скриншоты/видео)
 
