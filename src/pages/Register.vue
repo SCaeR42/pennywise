@@ -8,53 +8,63 @@
         <h3 class="text-2xl font-semibold leading-none tracking-tight">Регистрация</h3>
         <p class="text-sm text-muted-foreground">Создайте аккаунт {{ APP_CONFIG.NAME }}</p>
       </div>
-      <form @submit.prevent="handleSubmit">
+
+      <form @submit="handleSubmit">
         <div class="p-6 pt-0 space-y-4">
+
           <div class="space-y-2">
-            <label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Имя
-            </label>
+            <label for="name" class="text-sm font-medium leading-none">Имя</label>
             <input
-              id="name"
-              v-model="name"
-              type="text"
-              required
-              placeholder="Ваше имя"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                id="name"
+                v-model="name"
+                v-bind="nameProps"
+                type="text"
+                placeholder="Ваше имя"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                :class="{ 'border-destructive focus-visible:ring-destructive': errors.name }"
             />
+            <p class="text-sm text-destructive" v-if="errors.name">
+              {{ errors.name }}
+            </p>
           </div>
+
           <div class="space-y-2">
-            <label for="email" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Email
-            </label>
+            <label for="email" class="text-sm font-medium leading-none">Email</label>
             <input
-              id="email"
-              v-model="email"
-              type="email"
-              required
-              placeholder="mail@example.com"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                id="email"
+                v-model="email"
+                v-bind="emailProps"
+                type="email"
+                placeholder="mail@example.com"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                :class="{ 'border-destructive focus-visible:ring-destructive': errors.email }"
             />
+            <p class="text-sm text-destructive" v-if="errors.email">
+              {{ errors.email }}
+            </p>
           </div>
+
           <div class="space-y-2">
-            <label for="password" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Пароль
-            </label>
+            <label for="password" class="text-sm font-medium leading-none">Пароль</label>
             <input
-              id="password"
-              v-model="password"
-              type="password"
-              required
-              minlength="6"
-              placeholder="Минимум 6 символов"
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                id="password"
+                v-model="password"
+                v-bind="passwordProps"
+                type="password"
+                placeholder="Минимум 6 символов"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                :class="{ 'border-destructive focus-visible:ring-destructive': errors.password }"
             />
+            <p class="text-sm text-destructive" v-if="errors.password">
+              {{ errors.password }}
+            </p>
           </div>
         </div>
+
         <div class="flex flex-col gap-4 p-6 pt-0">
           <button
-            type="submit"
-            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
+              type="submit"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full cursor-pointer"
           >
             Создать аккаунт
           </button>
@@ -69,26 +79,50 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
 import { Wallet } from 'lucide-vue-next'
-import {APP_CONFIG} from '@/constants';
+import { APP_CONFIG } from '@/constants'
+import { useForm } from 'vee-validate'
+import * as z from 'zod'
+import { toTypedSchema } from '@vee-validate/zod'
 
-const name = ref('')
-const email = ref('')
-const password = ref('')
+// 1. Описываем схему строго через Zod
+const schema = z.object({
+  name: z
+      .string({ required_error: 'Имя обязательно для заполнения' })
+      .min(2, 'Имя должно содержать минимум 2 символа'),
+  email: z
+      .string({ required_error: 'Email обязателен для заполнения' })
+      .email('Введите корректный email'),       // Перехватит невалидный формат
+  password: z
+      .string({ required_error: 'Пароль обязателен для заполнения' })
+      .min(6, 'Пароль должен содержать минимум 6 символов')
+})
+
+// 2. Инициализируем ОДИН экземпляр формы. Достаем errors и defineField из него
+const { errors, handleSubmit: handleFormSubmit, defineField } = useForm({
+  validationSchema: toTypedSchema(schema),
+})
+
+// 3. Вызываем деструктуризацию полей из НАШЕЙ формы, а не из нового useForm()
+// Конфигурация по умолчанию уже валидирует по blur и change
+const [name, nameProps] = defineField('name')
+const [email, emailProps] = defineField('email')
+const [password, passwordProps] = defineField('password')
+
 const authStore = useAuthStore()
 const router = useRouter()
 const { toast } = useToast()
 
-const handleSubmit = () => {
-  if (authStore.register(email.value, password.value, name.value)) {
+// 4. Корректный обработчик отправки формы
+const handleSubmit = handleFormSubmit((values) => {
+  if (authStore.register(values.email, values.password, values.name)) {
     toast.success('Регистрация успешна!')
     router.push('/app/transactions')
   } else {
     toast.error('Этот email уже зарегистрирован')
   }
-}
+})
 </script>
