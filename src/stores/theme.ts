@@ -9,7 +9,7 @@
  */
 
 import { defineStore } from 'pinia'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, readonly } from 'vue'
 import { getItem, setItem } from '@/lib/storage'
 
 /**
@@ -75,7 +75,7 @@ export const useThemeStore = defineStore('theme', () => {
   }, { immediate: true })
 
   return {
-    theme,
+    theme: readonly(theme),
     resolvedTheme,
     setTheme
   }
