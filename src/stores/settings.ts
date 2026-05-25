@@ -7,62 +7,38 @@
  *
  * @module useSettingsStore
  */
-import { defineStore } from 'pinia'
-import { reactive, computed, watch } from 'vue'
-import type { UserSettings } from '@/types/finance'
-import { getItem, setItem } from '@/lib/storage'
+import {defineStore} from 'pinia'
+import {ref, watch, readonly} from 'vue'
+import type {UserSettings} from '@/types/finance'
+import {getItem, setItem} from '@/lib/storage'
 
 export const useSettingsStore = defineStore('settings', () => {
-    // ==================== State ====================
 
-    const state = reactive({
-        settings: getItem<UserSettings>('settings', {
-            rowsPerPage: 10,
-            theme: 'light' as const,
-            sideBarCollapsed: false,
-        }),
-        demoMode: getItem<boolean>('demoMode', true),
-    })
+    // ==================== State ====================
+    const settings = ref<UserSettings>(
+        getItem('settings', {rowsPerPage: 10, theme: 'light', sideBarCollapsed: false})
+    )
+    const demoMode = ref<boolean>(getItem('demoMode', true))
+
+    const updateSettings = (s: Partial<UserSettings>) => {
+        settings.value = {...settings.value, ...s}
+    }
+
+    const setDemoMode = (v: boolean) => {
+        demoMode.value = v
+    }
 
     // Автосинхронизация с localStorage
-    watch(
-        state,
-        (s) => {
-            setItem('settings', s.settings)
-            setItem('demoMode', s.demoMode)
-        },
-        { deep: true }
-    )
+    watch(settings, (newSettings) => setItem('settings', newSettings), {deep: true})
+    watch(demoMode, (newMode) => setItem('demoMode', newMode))
 
-    // ==================== Computed ====================
-
-    const settings = computed(() => state.settings)
-    const demoMode = computed(() => state.demoMode)
-
-    // ==================== Actions ====================
-
-    /**
-     * Частичное обновление настроек пользователя
-     * @param patch Поля для обновления
-     */
-    const updateSettings = (patch: Partial<UserSettings>) => {
-        state.settings = { ...state.settings, ...patch }
-    }
-
-    /**
-     * Включить / выключить режим демонстрации
-     * @param value Новое значение флага
-     */
-    const setDemoMode = (value: boolean) => {
-        state.demoMode = value
-    }
 
     // ==================== Public API ====================
 
     return {
-        settings,
-        demoMode,
+        settings: readonly(settings), // Защищаем стейт от прямых мутаций снаружи
+        demoMode: readonly(demoMode),
         updateSettings,
-        setDemoMode,
+        setDemoMode
     }
 })
