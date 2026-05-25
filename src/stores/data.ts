@@ -8,7 +8,7 @@
  * Персистентность обеспечивается через localStorage (модуль storage).
  */
 import {defineStore} from 'pinia'
-import {ref, computed} from 'vue'
+import {ref, computed, reactive, watch} from 'vue'
 import type {Transaction, Category, Account, Tag, UserSettings} from '@/types/finance'
 import {getItem, setItem, generateId} from '@/lib/storage'
 import {DEFAULT_CATEGORIES, DEFAULT_ACCOUNTS, DEFAULT_TAGS} from '@/lib/defaults'
@@ -17,19 +17,32 @@ import {getDemoTransactions, DEMO_ACCOUNTS, DEMO_TAGS} from '@/lib/demoData'
 export const useDataStore = defineStore('data', () => {
     // ==================== Reactive State ====================
 
-    /** Пользовательские транзакции (хранятся в localStorage) */
-    const transactions = ref<Transaction[]>(getItem('transactions', []))
-    /** Пользовательские категории (по умолчанию — DEFAULT_CATEGORIES) */
-    const categories = ref<Category[]>(getItem('categories', DEFAULT_CATEGORIES))
-    /** Пользовательские счета (по умолчанию — DEFAULT_ACCOUNTS) */
-    const accounts = ref<Account[]>(getItem('accounts', DEFAULT_ACCOUNTS))
-    /** Пользовательские теги (по умолчанию — DEFAULT_TAGS) */
-    const tags = ref<Tag[]>(getItem('tags', DEFAULT_TAGS))
-    /** Настройки пользователя (тема, кол-во строк, состояние сайдбара) */
-    const settings = ref<UserSettings>(getItem<UserSettings>('settings', {rowsPerPage: 10, theme: 'light' as const, sideBarCollapsed: false})
+    /**
+     * Реактивный объект состояния для персистентности.
+     * Watch с { deep: true } автоматически синхронизирует изменения с localStorage.
+     */
+    const state = reactive({
+        transactions: getItem<Transaction[]>('transactions', []),
+        categories: getItem<Category[]>('categories', DEFAULT_CATEGORIES),
+        accounts: getItem<Account[]>('accounts', DEFAULT_ACCOUNTS),
+        tags: getItem<Tag[]>('tags', DEFAULT_TAGS),
+        settings: getItem<UserSettings>('settings', {rowsPerPage: 10, theme: 'light' as const, sideBarCollapsed: false}),
+        demoMode: getItem<boolean>('demoMode', true)
+    })
+
+    // Автоматическая синхронизация состояния с localStorage
+    watch(
+        state,
+        (newState) => {
+            setItem('transactions', newState.transactions)
+            setItem('categories', newState.categories)
+            setItem('accounts', newState.accounts)
+            setItem('tags', newState.tags)
+            setItem('settings', newState.settings)
+            setItem('demoMode', newState.demoMode)
+        },
+        { deep: true }
     )
-    /** Флаг режима демонстрации */
-    const demoMode = ref<boolean>(getItem('demoMode', true))
 
     // ==================== Computed Properties ====================
 
@@ -38,32 +51,32 @@ export const useDataStore = defineStore('data', () => {
      * Демо-транзакции идут первыми, чтобы быть видимыми в начале списка
      */
     const effectiveTransactions = computed(() => {
-        const txs = transactions.value || []
-        return demoMode.value ? [...getDemoTransactions(), ...txs] : txs
+        const txs = state.transactions || []
+        return state.demoMode ? [...getDemoTransactions(), ...txs] : txs
     })
 
     /**
      * Эффективные счета: демо-счета + пользовательские
      */
     const effectiveAccounts = computed(() => {
-        const accs = accounts.value || []
-        return demoMode.value ? [...DEMO_ACCOUNTS, ...accs] : accs
+        const accs = state.accounts || []
+        return state.demoMode ? [...DEMO_ACCOUNTS, ...accs] : accs
     })
 
     /**
      * Эффективные теги: демо-теги + пользовательские
      */
     const effectiveTags = computed(() => {
-        const tgs = tags.value || []
-        return demoMode.value ? [...DEMO_TAGS, ...tgs] : tgs
+        const tgs = state.tags || []
+        return state.demoMode ? [...DEMO_TAGS, ...tgs] : tgs
     })
 
     /**
      * Эффективные категории: категории по умолчанию + пользовательские
      */
     const effectiveCategories = computed(() => {
-        const cats = categories.value || []
-        return demoMode.value ? [...DEFAULT_CATEGORIES, ...cats] : cats
+        const cats = state.categories || []
+        return state.demoMode ? [...DEFAULT_CATEGORIES, ...cats] : cats
     })
 
     // ==================== Transaction CRUD ====================
@@ -74,8 +87,7 @@ export const useDataStore = defineStore('data', () => {
      */
     const addTransaction = (t: Omit<Transaction, 'id' | 'createdAt'>) => {
         const newTransaction = {...t, id: generateId(), createdAt: new Date().toISOString()}
-        transactions.value = [...transactions.value, newTransaction]
-        setItem('transactions', transactions.value)
+        state.transactions = [...state.transactions, newTransaction]
     }
 
     /**
@@ -84,16 +96,14 @@ export const useDataStore = defineStore('data', () => {
      * @param t Частичные данные для обновления
      */
     const updateTransaction = (id: string, t: Partial<Transaction>) => {
-        transactions.value = transactions.value.map(x => x.id === id ? {...x, ...t} : x)
-        setItem('transactions', transactions.value)
+        state.transactions = state.transactions.map(x => x.id === id ? {...x, ...t} : x)
     }
 
     /**
      * Удалить транзакцию по ID
      */
     const deleteTransaction = (id: string) => {
-        transactions.value = transactions.value.filter(x => x.id !== id)
-        setItem('transactions', transactions.value)
+        state.transactions = state.transactions.filter(x => x.id !== id)
     }
 
     // ==================== Category CRUD ====================
@@ -103,24 +113,21 @@ export const useDataStore = defineStore('data', () => {
      */
     const addCategory = (c: Omit<Category, 'id'>) => {
         const newCategory = {...c, id: generateId()}
-        categories.value = [...categories.value, newCategory]
-        setItem('categories', categories.value)
+        state.categories = [...state.categories, newCategory]
     }
 
     /**
      * Обновить существующую категорию
      */
     const updateCategory = (id: string, c: Partial<Category>) => {
-        categories.value = categories.value.map(x => x.id === id ? {...x, ...c} : x)
-        setItem('categories', categories.value)
+        state.categories = state.categories.map(x => x.id === id ? {...x, ...c} : x)
     }
 
     /**
      * Удалить категорию по ID
      */
     const deleteCategory = (id: string) => {
-        categories.value = categories.value.filter(x => x.id !== id)
-        setItem('categories', categories.value)
+        state.categories = state.categories.filter(x => x.id !== id)
     }
 
     // ==================== Account CRUD ====================
@@ -130,24 +137,21 @@ export const useDataStore = defineStore('data', () => {
      */
     const addAccount = (a: Omit<Account, 'id'>) => {
         const newAccount = {...a, id: generateId()}
-        accounts.value = [...accounts.value, newAccount]
-        setItem('accounts', accounts.value)
+        state.accounts = [...state.accounts, newAccount]
     }
 
     /**
      * Обновить существующий счёт
      */
     const updateAccount = (id: string, a: Partial<Account>) => {
-        accounts.value = accounts.value.map(x => x.id === id ? {...x, ...a} : x)
-        setItem('accounts', accounts.value)
+        state.accounts = state.accounts.map(x => x.id === id ? {...x, ...a} : x)
     }
 
     /**
      * Удалить счёт по ID
      */
     const deleteAccount = (id: string) => {
-        accounts.value = accounts.value.filter(x => x.id !== id)
-        setItem('accounts', accounts.value)
+        state.accounts = state.accounts.filter(x => x.id !== id)
     }
 
     // ==================== Tag CRUD ====================
@@ -157,24 +161,21 @@ export const useDataStore = defineStore('data', () => {
      */
     const addTag = (t: Omit<Tag, 'id'>) => {
         const newTag = {...t, id: generateId()}
-        tags.value = [...tags.value, newTag]
-        setItem('tags', tags.value)
+        state.tags = [...state.tags, newTag]
     }
 
     /**
      * Обновить существующий тег
      */
     const updateTag = (id: string, t: Partial<Tag>) => {
-        tags.value = tags.value.map(x => x.id === id ? {...x, ...t} : x)
-        setItem('tags', tags.value)
+        state.tags = state.tags.map(x => x.id === id ? {...x, ...t} : x)
     }
 
     /**
      * Удалить тег по ID
      */
     const deleteTag = (id: string) => {
-        tags.value = tags.value.filter(x => x.id !== id)
-        setItem('tags', tags.value)
+        state.tags = state.tags.filter(x => x.id !== id)
     }
 
     // ==================== Settings & Demo Mode ====================
@@ -183,8 +184,7 @@ export const useDataStore = defineStore('data', () => {
      * Обновить настройки пользователя (частичное обновление)
      */
     const updateSettings = (s: Partial<UserSettings>) => {
-        settings.value = {...settings.value, ...s}
-        setItem('settings', settings.value)
+        state.settings = {...state.settings, ...s}
     }
 
     /**
@@ -192,8 +192,7 @@ export const useDataStore = defineStore('data', () => {
      * @param v Значение флага demoMode
      */
     const setDemoMode = (v: boolean) => {
-        demoMode.value = v
-        setItem('demoMode', v)
+        state.demoMode = v
     }
 
     // ==================== Public API ====================
@@ -221,10 +220,10 @@ export const useDataStore = defineStore('data', () => {
         updateTag,
         deleteTag,
         // Настройки
-        settings,
+        settings: computed(() => state.settings),
         updateSettings,
         // Демо-режим
-        demoMode,
+        demoMode: computed(() => state.demoMode),
         setDemoMode
     }
 })
