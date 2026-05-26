@@ -16,7 +16,7 @@ import Settings from '@/pages/Settings.vue'
 import NotFound from '@/pages/NotFound.vue'
 // import testTailWind from '@/pages/testTailWind.vue'
 
-const routes: RouteRecordRaw[] = [
+export const routes: RouteRecordRaw[] = [
     {
         path: '/testui',
         name: '/test-tailwind',

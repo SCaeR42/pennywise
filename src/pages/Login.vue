@@ -86,13 +86,14 @@ const schema = z.object({
       .min(6, 'Пароль должен содержать минимум 6 символов')
 })
 
+
 // 2. Инициализация формы приложения
 const {errors, handleSubmit: handleFormSubmit, defineField} = useForm({
   validationSchema: toTypedSchema(schema),
-  initialValues: {
-    email: 'mail@example.com',
-    password: '12345',
-  },
+  // initialValues: {
+  //   email: 'mail@example.com',
+  //   password: '12345',
+  // },
 })
 
 // 3. Создание реактивных связок для инпутов из текущего контекста формы
