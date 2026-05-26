@@ -1,4 +1,5 @@
-import {defineConfig} from 'vite';
+// import {defineConfig} from 'vite';
+import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue';
 import { fileURLToPath, URL } from 'node:url'
 import tailwindcss from '@tailwindcss/vite';
@@ -29,7 +30,18 @@ export default defineConfig({
             overlay: false,
         },
     },
-
+    build: {
+        rolldownOptions: { // или rollupOptions, если rolldown прокинут как замена
+            onwarn(warning, warn) {
+                // Игнорируем специфический ворнинг с невалидными аннотациями в node_modules
+                if (warning.code === 'INVALID_ANNOTATION' && warning.message.includes('node_modules')) {
+                    return
+                }
+                // Все остальные предупреждения выводим как обычно
+                warn(warning)
+            }
+        }
+    },
     resolve: {
         alias: {
             // Актуальный способ задания алиаса @ для папки src
@@ -37,4 +49,15 @@ export default defineConfig({
         },
 
     },
+    // test: {
+    //     environment: 'jsdom',
+    //     globals: true,
+    //     setupFiles: ['./tests/setup.ts'],
+    //     include: ['tests/pages/*.spec.ts'],
+    //     // include: ['tests/**/*.spec.ts'],
+    //     coverage: {
+    //         provider: 'v8',
+    //         reporter: ['text', 'json', 'html'],
+    //     },
+    // },
 })
