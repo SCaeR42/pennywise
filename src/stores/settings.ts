@@ -28,6 +28,10 @@ export const useSettingsStore = defineStore('settings', () => {
         demoMode.value = v
     }
 
+    const toggleSidebar = () => {
+        settings.value.sideBarCollapsed = !settings.value.sideBarCollapsed
+    }
+
     // Автосинхронизация с localStorage
     watch(settings, (newSettings) => setItem('settings', newSettings), {deep: true})
     watch(demoMode, (newMode) => setItem('demoMode', newMode))
@@ -39,6 +43,8 @@ export const useSettingsStore = defineStore('settings', () => {
         settings: readonly(settings), // Защищаем стейт от прямых мутаций снаружи
         demoMode: readonly(demoMode),
         updateSettings,
+        toggleSidebar,
         setDemoMode
     }
 })
+
