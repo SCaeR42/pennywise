@@ -105,13 +105,24 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to, _from) => {
     const authStore = useAuthStore()
+    const loginRoute = {
+        name: 'Login',
+        query: {
+            back: _from.fullPath,
+        },
+    }
 
+    // Если маршрут требует авторизации, а пользователь НЕ авторизован
     if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-        next('/login')
-    } else {
-        next()
+        return loginRoute
+    }
+
+    // Если авторизованный пользователь пытается зайти на страницу Login,
+    // редиректим его на главную или в Dashboard, чтобы не сидел на форме ввода
+    if ((to.name === 'Login' || to.name === 'Register') && authStore.isAuthenticated) {
+        return { name: 'Dashboard' }
     }
 })
 
