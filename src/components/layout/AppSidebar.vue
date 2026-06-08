@@ -70,6 +70,7 @@
       <hr>
 
       <RouterLink
+          v-if="authStore.user?.role === 'admin'"
           to="/testui"
           class="flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors text-primary"
       >

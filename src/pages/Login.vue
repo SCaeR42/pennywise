@@ -62,6 +62,28 @@
           </p>
         </div>
       </form>
+
+      <div class="flex flex-col items-center gap-3 p-6 pt-0">
+        <span class="text-sm text-muted-foreground">Войти как DEMO:</span>
+        <div class="flex flex-row gap-2">
+          <button
+              type="button"
+              @click="fillDemoUser"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-amber-600 text-primary-foreground hover:bg-amber-600/90 h-10 px-4 py-2 cursor-pointer"
+          >
+            Пользователь
+          </button>
+          <button
+              type="button"
+              @click="fillDemoAdmin"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-fuchsia-900 text-primary-foreground hover:bg-fuchsia-900/90 h-10 px-4 py-2 cursor-pointer"
+          >
+            Админ
+          </button>
+        </div>
+      </div>
+
+
     </div>
   </div>
 </template>
@@ -109,11 +131,29 @@ const {toast} = useToast()
 const handleSubmit = handleFormSubmit((values) => {
   console.log('Поля формы валидны:', values)
 
-  if (authStore.login(values.email, values.password)) {
+  // if (authStore.login(values.email, values.password)) {
+  //   toast.success('Добро пожаловать!')
+  //   router.push('/app/dashboard')
+  // } else {
+  //   toast.error('Неверный email или пароль')
+  // }
+
+  if (authStore.loginByJwt(values.email, values.password)) {
     toast.success('Добро пожаловать!')
     router.push('/app/dashboard')
   } else {
     toast.error('Неверный email или пароль')
   }
 })
+
+const fillDemoAdmin = () => {
+  email.value = authStore.DEMO_USERS.admin.email
+  password.value = authStore.DEMO_USERS.admin.password
+}
+
+const fillDemoUser = () => {
+  email.value = authStore.DEMO_USERS.user.email
+  password.value = authStore.DEMO_USERS.user.password
+}
+
 </script>
