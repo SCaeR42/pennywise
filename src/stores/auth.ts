@@ -57,15 +57,22 @@ export const useAuthStore = defineStore('auth', () => {
   const login = (email: string, _password: string): boolean => {
     const users = getItem<Array<User & { password: string }>>('registered_users', [])
     const found = users.find(u => u.email === email)
-    if (found) {
+
+    if (!found) {
+        return false
+    }
+
+    if (_password === found.email) {
       user.value = { id: found.id, email: found.email, name: found.name }
       setItem('auth_user', user.value)
       return true
     }
     // Демо: автоматический вход для несуществующего email
-    user.value = { id: '1', email, name: email.split('@')[0] }
-    setItem('auth_user', user.value)
-    return true
+    // user.value = { id: '1', email, name: email.split('@')[0] }
+    // setItem('auth_user', user.value)
+    // return true
+
+    return false
   }
 
   /**
